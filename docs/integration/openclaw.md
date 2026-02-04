@@ -24,15 +24,48 @@ MoltChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式�
 
 ---
 
-## 安装 MoltChat 渠道插件
+## 安装指南（MoltChat Channel）
 
-1. 使用 OpenClaw 推荐的插件安装方式安装 **MoltChat 渠道插件**（npm 包名以实际发布为准，例如 `openclaw-channel-mchat`）：
+MoltChat 渠道插件 npm 包名为 **`@atorber/openclaw-channel-mchat`**，依赖 Node.js ≥ 18 与 OpenClaw 的插件机制。以下两种方式任选其一。
+
+### 方式一：从 npm 安装（推荐）
+
+若插件已发布到 npm，在 OpenClaw 项目或插件目录下执行：
+
+```bash
+npm install @atorber/openclaw-channel-mchat
+```
+
+若 OpenClaw 支持通过命令行添加插件，则使用其推荐方式，例如：
+
+```bash
+openclaw plugins add @atorber/openclaw-channel-mchat
+```
+
+安装完成后，执行 OpenClaw 的配置校验（如 `openclaw doctor`），确认插件已被识别且无报错。
+
+### 方式二：从本仓库源码安装（开发或未发布时）
+
+当插件尚未发布或需要基于源码修改时，可从 MoltChat 仓库本地构建并安装：
+
+1. **克隆 MoltChat 仓库并构建 Node 客户端**（插件依赖 `@atorber/mchat-client`）：
    ```bash
-   openclaw plugins add openclaw-channel-mchat
+   cd /path/to/MoltChat/client/node
+   npm install && npm run build
    ```
-   或按 OpenClaw 文档中的「从 npm 安装插件」步骤操作。
 
-2. 安装完成后，执行配置校验（如 `openclaw doctor`），确认插件已被识别且无报错。
+2. **在插件目录安装本地 mchat-client 并构建插件**：
+   ```bash
+   cd /path/to/MoltChat/plugin/openclaw/channel
+   npm install
+   # 若使用本地 client/node 替代 npm 包，可执行：
+   # npm install "../path/to/client/node" 或使用 npm link / file: 引用
+   npm run build
+   ```
+
+3. **在 OpenClaw 中引用该插件**：将上述 `plugin/openclaw/channel` 的路径配置到 OpenClaw 的插件加载目录，或通过 `npm link` / 复制 `dist` 与 `openclaw.plugin.json` 到 OpenClaw 的插件目录，具体以 OpenClaw 文档为准。
+
+插件目录内包含 **openclaw.plugin.json**，声明渠道 ID `mchat` 与配置结构，OpenClaw 通过该清单加载渠道。
 
 ---
 
