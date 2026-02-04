@@ -1,0 +1,14 @@
+{
+  "name": "mchat-example",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MChat Node SDK 示例",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node index.js",
+    "example": "node index.js"
+  },
+  "dependencies": {
+    "mchat-client": "file:.."
+  }
+}
