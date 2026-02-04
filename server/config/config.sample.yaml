@@ -1,0 +1,29 @@
+# MChat 服务端统一配置示例
+# 复制为 config.yaml 并填写实际值；config.yaml 勿提交版本库
+
+broker:
+  host: localhost
+  port: 1883
+  useTls: false
+  clientId: mchat_gateway_1
+  username: ""
+  password: ""
+  shareSubscription: gateway   # 共享订阅组名，空则使用普通订阅 mchat/msg/req/+/+
+
+mysql:
+  host: localhost
+  port: 3306
+  user: mchat
+  password: ""
+  database: mchat
+  poolSize: 10
+  connectTimeout: 10000
+
+storage:
+  endpoint: https://s3.example.com
+  region: cn-hangzhou
+  bucket: mchat-files
+  accessKey: ""
+  secretKey: ""
+  # 可选：预签名 URL 过期秒数
+  presignExpires: 3600

@@ -1,0 +1,45 @@
+{
+  "name": "mchat-server",
+  "version": "0.1.0",
+  "description": "MChat 服务端 - Node.js + TypeScript，MQTT 网关与业务 Handler",
+  "main": "dist/index.js",
+  "bin": {
+    "mchat-server": "bin/mchat-server.js"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "config",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "db:init": "ts-node src/db/run-init.ts",
+    "db:seed": "ts-node src/db/run-seed-admin.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mchat",
+    "mqtt",
+    "server",
+    "im"
+  ],
+  "dependencies": {
+    "mqtt": "^5.3.0",
+    "mysql2": "^3.6.5",
+    "uuid": "^9.0.1",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}
