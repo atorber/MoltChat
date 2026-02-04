@@ -16,16 +16,17 @@ export async function handleOrgTree(ctx: ReqContext, deps: Deps): Promise<RespPa
   );
 
   const [empRows] = await pool.execute(
-    'SELECT employee_id, name, department_id, manager_id, is_ai_agent FROM employee WHERE status = ?',
+    'SELECT employee_id, name, department_id, manager_id, is_ai_agent, skills_badge FROM employee WHERE status = ?',
     ['active']
   );
-  const employees = (empRows as { employee_id: string; name: string; department_id: string | null; manager_id: string | null; is_ai_agent: number }[]).map(
+  const employees = (empRows as { employee_id: string; name: string; department_id: string | null; manager_id: string | null; is_ai_agent: number; skills_badge: string | null }[]).map(
     (r) => ({
       employee_id: r.employee_id,
       name: r.name,
       department_id: r.department_id,
       manager_id: r.manager_id,
       is_ai_agent: Boolean(r.is_ai_agent),
+      skills_badge: r.skills_badge ? (JSON.parse(r.skills_badge) as unknown) : null,
     })
   );
 

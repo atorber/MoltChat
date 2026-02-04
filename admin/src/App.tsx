@@ -6,6 +6,7 @@ import OrgTree from './pages/OrgTree';
 import Employees from './pages/Employees';
 import Departments from './pages/Departments';
 import Groups from './pages/Groups';
+import Settings from './pages/Settings';
 
 function Protected({ children }: { children: React.ReactNode }) {
   const { connected } = useMqtt();
@@ -30,6 +31,7 @@ function AppRoutes() {
         <Route path="departments" element={<Departments />} />
         <Route path="employees" element={<Employees />} />
         <Route path="groups" element={<Groups />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

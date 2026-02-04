@@ -8,13 +8,13 @@ import { Code } from '../types';
 import { getPool } from '../db/pool';
 import { getEmployeeIdByClientId } from '../db/session';
 import { handleAuthBind } from '../handlers/auth';
-import { handleEmployeeCreate, handleEmployeeUpdate } from '../handlers/employee';
+import { handleEmployeeCreate, handleEmployeeUpdate, handleEmployeeGet, handleEmployeeList, handleEmployeeDelete } from '../handlers/employee';
 import { handleOrgTree } from '../handlers/org';
 import { handleGroupCreate, handleGroupDismiss, handleGroupMemberAdd, handleGroupMemberRemove, handleGroupList } from '../handlers/group';
 import { handleMsgSendPrivate, handleMsgSendGroup, handleMsgReadAck } from '../handlers/msg';
-import { handleConfigStorage } from '../handlers/config';
+import { handleConfigStorage, handleConfigServer } from '../handlers/config';
 import { handleAgentCapabilityList } from '../handlers/agent';
-import { handleDepartmentCreate, handleDepartmentUpdate, handleDepartmentDelete } from '../handlers/department';
+import { handleDepartmentCreate, handleDepartmentUpdate, handleDepartmentDelete, handleDepartmentGet, handleDepartmentList } from '../handlers/department';
 import { handleFileUploadUrl, handleFileDownloadUrl } from '../handlers/file';
 import { handleAuthChallenge } from '../handlers/auth';
 
@@ -58,10 +58,15 @@ function getHandler(action: string): ((ctx: ReqContext, deps: Deps) => Promise<R
     'auth.challenge': handleAuthChallenge,
     'employee.create': handleEmployeeCreate,
     'employee.update': handleEmployeeUpdate,
+    'employee.get': handleEmployeeGet,
+    'employee.list': handleEmployeeList,
+    'employee.delete': handleEmployeeDelete,
     'org.tree': handleOrgTree,
     'department.create': handleDepartmentCreate,
     'department.update': handleDepartmentUpdate,
     'department.delete': handleDepartmentDelete,
+    'department.get': handleDepartmentGet,
+    'department.list': handleDepartmentList,
     'group.create': handleGroupCreate,
     'group.list': handleGroupList,
     'group.dismiss': handleGroupDismiss,
@@ -71,6 +76,7 @@ function getHandler(action: string): ((ctx: ReqContext, deps: Deps) => Promise<R
     'msg.send_group': handleMsgSendGroup,
     'msg.read_ack': handleMsgReadAck,
     'config.storage': handleConfigStorage,
+    'config.server': handleConfigServer,
     'agent.capability_list': handleAgentCapabilityList,
     'file.upload_url': handleFileUploadUrl,
     'file.download_url': handleFileDownloadUrl,

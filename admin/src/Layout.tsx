@@ -27,6 +27,9 @@ export default function Layout() {
           <NavLink to="/groups" className={({ isActive }) => (isActive ? 'active' : '')}>
             群组管理
           </NavLink>
+          <NavLink to="/settings" className={({ isActive }) => (isActive ? 'active' : '')}>
+            设置
+          </NavLink>
         </nav>
         <div style={{ padding: '16px', marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <span style={{ fontSize: 12, color: '#94a3b8' }}>{employeeId || ''}</span>

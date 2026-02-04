@@ -1,0 +1,45 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "MChat Server: 运行",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "args": ["${workspaceFolder}/server/src/index.ts"],
+            "cwd": "${workspaceFolder}/server",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "MChat Server: 调试",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "args": ["${workspaceFolder}/server/src/index.ts"],
+            "cwd": "${workspaceFolder}/server",
+            "console": "integratedTerminal",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "MChat Admin: 运行",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+            "cwd": "${workspaceFolder}/admin",
+            "console": "integratedTerminal"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "启动程序",
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${file}",
+            "outFiles": ["${workspaceFolder}/**/*.js"]
+        }
+    ]
+}

@@ -1,5 +1,5 @@
 /**
- * department.create / department.update / department.delete
+ * department.create / department.update / department.delete / department.get / department.list
  */
 
 import type { Pool } from 'mysql2/promise';
@@ -7,6 +7,61 @@ import { v4 as uuidv4 } from 'uuid';
 import type { ReqContext, RespPayload } from '../types';
 import { Code } from '../types';
 import type { Deps } from '../mqtt/router';
+
+export async function handleDepartmentGet(ctx: ReqContext, deps: Deps): Promise<RespPayload> {
+  const department_id = typeof ctx.payload.department_id === 'string' ? ctx.payload.department_id : null;
+  if (!department_id) return { code: Code.BAD_REQUEST, message: 'Missing department_id' };
+
+  const [rows] = await deps.pool.execute(
+    'SELECT department_id, name, parent_id, sort_order, created_at, updated_at FROM department WHERE department_id = ? LIMIT 1',
+    [department_id]
+  );
+  const list = rows as { department_id: string; name: string; parent_id: string | null; sort_order: number; created_at: Date; updated_at: Date }[];
+  if (list.length === 0) return { code: Code.NOT_FOUND, message: 'Department not found' };
+
+  const d = list[0];
+  return {
+    code: Code.OK,
+    message: 'ok',
+    data: {
+      department_id: d.department_id,
+      name: d.name,
+      parent_id: d.parent_id,
+      sort_order: d.sort_order,
+      created_at: d.created_at instanceof Date ? d.created_at.toISOString() : d.created_at,
+      updated_at: d.updated_at instanceof Date ? d.updated_at.toISOString() : d.updated_at,
+    },
+  };
+}
+
+export async function handleDepartmentList(ctx: ReqContext, deps: Deps): Promise<RespPayload> {
+  const parent_id = ctx.payload.parent_id === null || (typeof ctx.payload.parent_id === 'string' && ctx.payload.parent_id === '') ? null : typeof ctx.payload.parent_id === 'string' ? ctx.payload.parent_id : undefined;
+
+  let sql = 'SELECT department_id, name, parent_id, sort_order, created_at, updated_at FROM department';
+  let params: (string | null)[] = [];
+  if (parent_id !== undefined) {
+    if (parent_id === null) {
+      sql += ' WHERE parent_id IS NULL';
+    } else {
+      sql += ' WHERE parent_id = ?';
+      params = [parent_id];
+    }
+  }
+  sql += ' ORDER BY sort_order, department_id';
+
+  const [rows] = params.length > 0 ? await deps.pool.execute(sql, params) : await deps.pool.execute(sql);
+  const list = rows as { department_id: string; name: string; parent_id: string | null; sort_order: number; created_at: Date; updated_at: Date }[];
+  const departments = list.map((d) => ({
+    department_id: d.department_id,
+    name: d.name,
+    parent_id: d.parent_id,
+    sort_order: d.sort_order,
+    created_at: d.created_at instanceof Date ? d.created_at.toISOString() : d.created_at,
+    updated_at: d.updated_at instanceof Date ? d.updated_at.toISOString() : d.updated_at,
+  }));
+
+  return { code: Code.OK, message: 'ok', data: { departments } };
+}
 
 export async function handleDepartmentCreate(ctx: ReqContext, deps: Deps): Promise<RespPayload> {
   const name = typeof ctx.payload.name === 'string' ? ctx.payload.name : '';
@@ -51,6 +106,18 @@ export async function handleDepartmentUpdate(ctx: ReqContext, deps: Deps): Promi
 export async function handleDepartmentDelete(ctx: ReqContext, deps: Deps): Promise<RespPayload> {
   const department_id = typeof ctx.payload.department_id === 'string' ? ctx.payload.department_id : null;
   if (!department_id) return { code: Code.BAD_REQUEST, message: 'Missing department_id' };
-  await deps.pool.execute('DELETE FROM department WHERE department_id = ?', [department_id]);
+
+  const pool = deps.pool;
+  const [childDept] = await pool.execute('SELECT 1 FROM department WHERE parent_id = ? LIMIT 1', [department_id]);
+  if (Array.isArray(childDept) && childDept.length > 0) {
+    return { code: Code.BAD_REQUEST, message: 'Cannot delete department with child departments; move or delete children first' };
+  }
+  const [empRows] = await pool.execute('SELECT 1 FROM employee WHERE department_id = ? AND status = ? LIMIT 1', [department_id, 'active']);
+  const empList = empRows as { '1': number }[];
+  if (empList.length > 0) {
+    return { code: Code.BAD_REQUEST, message: 'Cannot delete department with active employees; reassign or disable them first' };
+  }
+
+  await pool.execute('DELETE FROM department WHERE department_id = ?', [department_id]);
   return { code: Code.OK, message: 'ok', data: { department_id, deleted_at: new Date().toISOString() } };
 }

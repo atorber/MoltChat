@@ -24,7 +24,7 @@
     "im"
   ],
   "dependencies": {
-    "@atorber/mchat-client": "^0.1.0"
+    "@atorber/mchat-client": "^0.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
