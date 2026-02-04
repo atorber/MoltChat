@@ -1,4 +1,5 @@
-# 发布 client/node、client/python、server、plugin/openclaw/channel 到 npm / PyPI
+# 发布 client/node、client/python、server、plugin/openclaw/channel 到 npm / PyPI；
+# Release 发布时编译 Android 应用并将 APK 上传到该 Release。
 # 触发：创建 Release 并打 tag（格式 v*，如 v1.0.0）或手动运行
 # 需在仓库 Settings → Secrets 中配置：NPM_TOKEN、PYPI_API_TOKEN
 
@@ -130,6 +131,62 @@ jobs:
           npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # Release 发布时：编译 Android 应用并将 APK 上传到该 Release
+  build-android-release:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    needs: set-version
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Set version in client/android (optional)
+        if: needs.set-version.outputs.version != ''
+        run: |
+          V="${{ needs.set-version.outputs.version }}"
+          # 更新 app/build.gradle.kts 中的 versionName
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"$V\"/" client/android/app/build.gradle.kts
+          # 可选：按版本生成 versionCode（例如 1.0.0 -> 10000）
+          # 此处保持 versionCode 不变，仅改 versionName
+          true
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: "tools platform-tools platforms;android-36 build-tools;35.0.0"
+
+      - name: Build release APK
+        working-directory: client/android
+        run: ./gradlew assembleRelease --no-daemon
+
+      - name: Upload APK to Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          APK_PATH=$(ls client/android/app/build/outputs/apk/release/*.apk 2>/dev/null | head -1)
+          if [ -z "$APK_PATH" ]; then
+            echo "::error::No APK found"
+            exit 1
+          fi
+          APK_NAME=$(basename "$APK_PATH")
+          UPLOAD_URL="${{ github.event.release.upload_url }}"
+          # GitHub 要求 upload_url 去掉 {?name,label} 后追加 ?name=...
+          UPLOAD_URL="${UPLOAD_URL%\{*}"
+          curl -sS -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Content-Type: application/vnd.android.package-archive" \
+            -T "$APK_PATH" \
+            "${UPLOAD_URL}?name=${APK_NAME}"
 
   # 发布 client/python 到 PyPI
   publish-pypi:
