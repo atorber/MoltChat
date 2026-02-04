@@ -6,7 +6,7 @@
 
 ---
 
-## 一、概述
+## 概述
 
 在 OpenClaw 中启用 **MChat** 渠道后，你可以：
 
@@ -18,7 +18,7 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 
 ---
 
-## 二、前置条件
+## 前置条件
 
 - 已部署 **MChat 服务端** 与 **MQTT Broker**，并至少有一个员工账号。
 - 已在 MChat 管理后台（或通过 `employee.create`）为该员工创建账号并获取 **MQTT 连接信息**（Broker 地址、端口、用户名、密码）；该员工 ID 即下文的 **employee_id**。
@@ -26,7 +26,7 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 
 ---
 
-## 三、安装 MChat 渠道插件
+## 安装 MChat 渠道插件
 
 1. 使用 OpenClaw 推荐的插件安装方式安装 **MChat 渠道插件**（npm 包名以实际发布为准，例如 `openclaw-channel-mchat`）：
    ```bash
@@ -38,11 +38,11 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 
 ---
 
-## 四、配置 MChat 渠道
+## 配置 MChat 渠道
 
 在 OpenClaw 的 Gateway 配置文件中（如 `~/.openclaw/openclaw.json` 或通过 `openclaw configure` 编辑）增加 **mchat** 渠道配置。
 
-### 4.1 最小配置示例
+### 最小配置示例
 
 ```json
 {
@@ -60,7 +60,7 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 }
 ```
 
-### 4.2 配置项说明
+### 配置项说明
 
 | 配置项 | 必填 | 说明 |
 |--------|------|------|
@@ -76,21 +76,21 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 
 上述连接信息应与 MChat 管理后台下发的 **MQTT 连接信息** 一致。
 
-### 4.3 保存并重启 Gateway
+### 保存并重启 Gateway
 
 保存配置文件后，重启 OpenClaw Gateway，使 MChat 渠道生效。若配置有误，Gateway 日志中会出现连接或校验错误，请根据提示修正。
 
 ---
 
-## 五、使用方式
+## 使用方式
 
-### 5.1 单聊（私聊）
+### 单聊（私聊）
 
 - **会话标识**：在 OpenClaw 中，MChat 单聊的会话（thread）对应对方的 **employee_id**。
 - **收消息**：当其他员工向当前配置的 MChat 员工发送私聊消息时，OpenClaw 会收到并可在会话列表中查看、由 Agent 回复。
 - **发消息**：通过 OpenClaw 向该会话发送消息时，将作为 MChat 单聊消息发给对应用户。
 
-### 5.2 群聊
+### 群聊
 
 - **会话标识**：MChat 群聊的会话对应 **group_id**。
 - **收消息**：需该 MChat 员工已加入相应群组；插件会订阅已加入的群并接收群消息，在 OpenClaw 中按群会话展示。
@@ -98,14 +98,14 @@ MChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式类�
 
 若需接收更多群的消息，请确保该员工在 MChat 侧已被加入这些群（通过管理后台或 group.member_add）。
 
-### 5.3 与 Agent 协作
+### 与 Agent 协作
 
 - MChat 渠道收到的单聊/群聊消息会进入 OpenClaw 的会话与路由逻辑，你可通过 OpenClaw 的 Agent、技能、多 Agent 路由等能力进行回复或自动化处理。
 - 回复将经由 MChat 渠道发回 MChat，对方在 MChat 客户端或 SDK 中可见。
 
 ---
 
-## 六、常见问题
+## 常见问题
 
 **Q：配置后 Gateway 报错「未认证」或连接失败？**  
 A：请确认 brokerHost、brokerPort、username、password 与 MChat 管理后台或 MQTT Broker 控制台中的配置一致；员工账号未被禁用。
@@ -121,8 +121,8 @@ A：完整技术方案与实现要点见仓库 `.knowledge/MChat适配OpenClaw�
 
 ---
 
-## 七、相关文档
+## 相关文档
 
-- [消息交互接口与示例](消息交互接口与示例.md)：MChat 的 MQTT Topic 与 Payload 约定
-- [SDK 使用说明](SDK使用说明.md)：MChat Node/Python SDK，用于自建客户端或脚本
+- [消息交互接口](../api/index.md)：MChat 的 MQTT Topic 与 Payload 约定
+- [SDK 使用说明](../sdk/index.md)：MChat Node/Python SDK，用于自建客户端或脚本
 - 技术方案（开发/维护者）：仓库 `.knowledge/MChat适配OpenClaw技术方案.md`

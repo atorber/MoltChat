@@ -88,8 +88,8 @@ OpenClaw 的渠道由 Gateway 在进程内加载，具体加载方式与 Provide
 ## 相关文档
 
 - [MChat 适配 OpenClaw 技术方案](https://github.com/your-org/MChat/blob/main/.knowledge/MChat适配OpenClaw技术方案.md)（仓库 `.knowledge/`）
-- [OpenClaw 集成使用说明](https://github.com/your-org/MChat/blob/main/docs/OpenClaw集成使用说明.md)（用户配置与使用）
-- [MChat 消息交互接口与示例](https://github.com/your-org/MChat/blob/main/docs/消息交互接口与示例.md)
+- [OpenClaw 集成使用说明](https://github.com/your-org/MChat/blob/main/docs/integration/openclaw.md)（用户配置与使用）
+- [MChat 消息交互接口](https://github.com/your-org/MChat/blob/main/docs/api/index.md)
 
 ## License
 

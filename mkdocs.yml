@@ -21,10 +21,27 @@ theme:
 
 nav:
   - 首页: index.md
-  - 产品使用手册: 产品使用手册.md
-  - 消息交互接口与示例: 消息交互接口与示例.md
-  - SDK使用说明: SDK使用说明.md
-  - OpenClaw集成使用说明: OpenClaw集成使用说明.md
+  - 使用指南:
+    - 总览: guide/index.md
+    - 产品简介: guide/intro.md
+    - 系统管理员指南: guide/admin.md
+    - 员工使用指南: guide/user.md
+    - 典型场景: guide/scenarios.md
+    - 常见问题: guide/faq.md
+  - 消息交互接口:
+    - 总览与一览: api/index.md
+    - 通用约定: api/convention.md
+    - 认证与会话: api/auth.md
+    - 管理类接口: api/management.md
+    - 消息类接口: api/messaging.md
+    - 状态与扩展: api/status-and-ext.md
+  - SDK:
+    - 使用说明: sdk/index.md
+    - Node.js: sdk/node.md
+    - Python: sdk/python.md
+    - 通用说明: sdk/common.md
+  - 集成:
+    - OpenClaw: integration/openclaw.md
 
 plugins:
   - search

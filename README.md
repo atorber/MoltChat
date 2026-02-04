@@ -18,7 +18,7 @@
 | **client/node/** | Node.js/TypeScript 客户端 SDK，封装连接、请求-响应、收件箱/群订阅与事件；**example/** 为同目录下示例。详见 [client/node/README.md](client/node/README.md) |
 | **client/python/** | Python 客户端 SDK（paho-mqtt），API 与 Node SDK 对齐；**example/** 为同目录下示例。详见 [client/python/README.md](client/python/README.md) |
 | **plugin/openclaw/channel/** | OpenClaw 渠道插件 **openclaw-channel-mchat**，将 MChat 作为 OpenClaw 聊天渠道。详见 [plugin/openclaw/channel/README.md](plugin/openclaw/channel/README.md) |
-| **docs/** | 《产品使用手册》、《消息交互接口与示例》 |
+| **docs/** | 使用指南、消息交互接口、SDK 说明、OpenClaw 集成；可经 MkDocs 发布为 GitHub Pages |
 | **.knowledge/** | 《产品需求方案》PRD、《技术设计方案》等 |
 
 ## 快速开始
@@ -46,8 +46,10 @@
 
 - [产品需求方案（PRD）](.knowledge/产品需求方案.md)
 - [技术设计方案](.knowledge/技术设计方案.md)
-- [产品使用手册](docs/产品使用手册.md)
-- [消息交互接口与示例](docs/消息交互接口与示例.md)
+- [使用指南](docs/guide/index.md)（产品简介、管理员/员工手册、典型场景、FAQ）
+- [消息交互接口](docs/api/index.md)（MQTT Topic、Payload 与示例）
+- [SDK 使用说明](docs/sdk/index.md)（Node.js / Python）
+- [OpenClaw 集成](docs/integration/openclaw.md)
 
 **文档站点（GitHub Pages）**：`docs/` 目录通过 [MkDocs](https://www.mkdocs.org/) 构建并发布为 GitHub Pages。在仓库 **Settings → Pages → Source** 中选择 **GitHub Actions** 后，推送到 `main` 的 `docs/` 或 `mkdocs.yml` 变更会触发 [.github/workflows/docs.yml](.github/workflows/docs.yml) 自动构建与部署，站点地址为 `https://<owner>.github.io/<repo>/`。
 
