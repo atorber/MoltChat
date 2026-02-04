@@ -1,0 +1,131 @@
+# 发布 client/node、client/python、server 到 npm / PyPI
+# 触发：创建 Release 并打 tag（格式 v*，如 v1.0.0）或手动运行
+# 需在仓库 Settings → Secrets 中配置：NPM_TOKEN、PYPI_API_TOKEN
+
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "版本号（仅手动触发时可选，用于覆盖各包内版本；留空则使用各 package 内已有版本）"
+        required: false
+        type: string
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  # 从 release tag 或手动输入解析版本（供后续 job 覆盖各包 version）
+  set-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - name: Get version from tag or input
+        id: ver
+        run: |
+          if [ "${{ github.event_name }}" = "release" ] && echo "${{ github.ref }}" | grep -q '^refs/tags/v'; then
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          elif [ -n "${{ github.event.inputs.version }}" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=" >> $GITHUB_OUTPUT
+          fi
+
+  # 发布 client/node 到 npm
+  publish-npm-client:
+    runs-on: ubuntu-latest
+    needs: set-version
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+
+      - name: Set version in client/node
+        if: needs.set-version.outputs.version != ''
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = require('./client/node/package.json');
+          p.version = '${{ needs.set-version.outputs.version }}';
+          fs.writeFileSync('./client/node/package.json', JSON.stringify(p, null, 2));
+          "
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install and publish client/node
+        working-directory: client/node
+        run: |
+          npm ci 2>/dev/null || npm install
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # 发布 server 到 npm
+  publish-npm-server:
+    runs-on: ubuntu-latest
+    needs: set-version
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+
+      - name: Set version in server
+        if: needs.set-version.outputs.version != ''
+        run: |
+          node -e "
+          const fs = require('fs');
+          const p = require('./server/package.json');
+          p.version = '${{ needs.set-version.outputs.version }}';
+          fs.writeFileSync('./server/package.json', JSON.stringify(p, null, 2));
+          "
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install and publish server
+        working-directory: server
+        run: |
+          npm ci 2>/dev/null || npm install
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # 发布 client/python 到 PyPI
+  publish-pypi:
+    runs-on: ubuntu-latest
+    needs: set-version
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+
+      - name: Set version in client/python
+        if: needs.set-version.outputs.version != ''
+        run: |
+          sed -i 's/^version = .*/version = "${{ needs.set-version.outputs.version }}"/' client/python/pyproject.toml
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Build client/python
+        working-directory: client/python
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          packages-dir: client/python/dist
+          skip-existing: true
