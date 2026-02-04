@@ -87,7 +87,7 @@ Payload 为 JSON，含 `msg_id`、`from_employee_id`、`content`、`sent_at`、`
 
 ### 4.2 插件形态与仓库建议
 
-- **形态**：独立 npm 包（如 `@mchat/openclaw-channel-mchat` 或 `openclaw-channel-mchat`），实现 OpenClaw 的 Channel Provider 接口；包内包含 **openclaw.plugin.json** 及实现代码。
+- **形态**：独立 npm 包（如 `@atorber/openclaw-channel-mchat` 或 `openclaw-channel-mchat`），实现 OpenClaw 的 Channel Provider 接口；包内包含 **openclaw.plugin.json** 及实现代码。
 - **仓库**：可放在 MChat 仓库内（如 `integrations/openclaw-channel/`）或单独仓库；通过 npm 发布，用户通过 `openclaw plugins add` 或 OpenClaw 文档中推荐的插件安装方式安装。
 
 ### 4.3 插件清单（openclaw.plugin.json）

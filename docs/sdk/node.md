@@ -5,7 +5,7 @@
 从 npm 安装（发布后）：
 
 ```bash
-npm install mchat-client
+npm install @atorber/mchat-client
 ```
 
 从本仓库引用：

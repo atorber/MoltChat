@@ -11,7 +11,7 @@ Node.js / TypeScript 版 MChat 客户端 SDK，与《技术设计方案》及《
 **从 npm 安装**（发布后）：
 
 ```bash
-npm install mchat-client
+npm install @atorber/mchat-client
 ```
 
 **从本仓库引用**：
