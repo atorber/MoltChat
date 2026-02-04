@@ -37,8 +37,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install mkdocs "mkdocs-material>=9.0"
 
+      - name: Show tool versions
+        run: |
+          python --version
+          mkdocs --version
+
       - name: Build site
         run: mkdocs build --strict
+
+      - name: Inspect site output
+        run: |
+          test -f site/index.html
+          echo "Site files:"
+          ls -la site | head -n 50
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -55,3 +66,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deploy
         uses: actions/deploy-pages@v4
+
+      - name: Show deployed URL
+        run: echo "Deployed to ${{ steps.deploy.outputs.page_url }}"
+
+      - name: Health check homepage
+        run: |
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: ${{ steps.deploy.outputs.page_url }}"
+            curl -I --max-time 15 "${{ steps.deploy.outputs.page_url }}" && exit 0
+            sleep 5
+          done
+          exit 1
