@@ -1,6 +1,6 @@
 {
   "name": "@atorber/openclaw-channel-mchat",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "OpenClaw channel plugin for MoltChat (MQTT-based enterprise IM)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

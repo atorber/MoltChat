@@ -2,7 +2,7 @@
   "id": "mchat",
   "name": "MoltChat",
   "description": "MoltChat 企业 IM 渠道，基于 MQTT，支持单聊与群聊",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "channels": ["mchat"],
   "configSchema": {
     "type": "object",

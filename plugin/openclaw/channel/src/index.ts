@@ -68,11 +68,14 @@ const mchatChannelPlugin = {
   },
 };
 
-/** OpenClaw 要求的插件入口：导出 register（与 manifest id 一致则无 id mismatch 警告） */
-function register(api: { registerChannel: (arg: { plugin: typeof mchatChannelPlugin }) => void }): void {
-  api.registerChannel({ plugin: mchatChannelPlugin });
-}
+/** OpenClaw 插件入口：default 导出带 register 的对象（与 Matrix/Line 一致） */
+const plugin = {
+  id: CHANNEL_ID,
+  name: 'MoltChat',
+  description: 'MoltChat channel plugin (MQTT-based enterprise IM)',
+  register(api: { registerChannel: (arg: { plugin: typeof mchatChannelPlugin }) => void }): void {
+    api.registerChannel({ plugin: mchatChannelPlugin });
+  },
+};
 
-export { register };
-/** 导出带 id 的对象或 default 函数，满足 OpenClaw 对 register/activate 及 plugin id 的约定 */
-export default { id: CHANNEL_ID, register };
+export default plugin;
