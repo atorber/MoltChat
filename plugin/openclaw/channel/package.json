@@ -1,5 +1,5 @@
 {
-  "name": "openclaw-channel-mchat",
+  "name": "@atorber/openclaw-channel-mchat",
   "version": "0.1.0",
   "description": "OpenClaw channel plugin for MChat (MQTT-based enterprise IM)",
   "main": "dist/index.js",

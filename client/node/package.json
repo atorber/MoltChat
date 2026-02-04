@@ -1,5 +1,5 @@
 {
-  "name": "mchat-client",
+  "name": "@atorber/mchat-client",
   "version": "0.1.0",
   "description": "MChat Node.js/TypeScript 客户端 SDK",
   "main": "dist/index.js",
