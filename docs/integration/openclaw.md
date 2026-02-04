@@ -2,8 +2,6 @@
 
 > 说明如何在 OpenClaw 中安装、配置并使用 **MoltChat** 渠道，使 OpenClaw 能够通过 MoltChat 收发单聊与群聊消息、与 MoltChat 内的 AI Agent 协作。
 
-**文档版本**：1.0
-
 ---
 
 ## 概述

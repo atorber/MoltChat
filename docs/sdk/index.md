@@ -2,8 +2,6 @@
 
 MoltChat 提供 **Node.js/TypeScript** 与 **Python** 客户端 SDK，封装 MQTT 连接、请求-响应、收件箱/群消息订阅与事件，便于脚本、服务端或 CLI 集成。两套 SDK 的 API 设计对齐，可按所用语言选择。移动端/桌面端客户端见 [客户端](../client/index.md) 文档。
 
-**文档版本**：1.0
-
 ---
 
 ## 概述
