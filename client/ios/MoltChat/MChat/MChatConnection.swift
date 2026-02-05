@@ -132,7 +132,8 @@ final class MChatConnection {
     
     private func performConnect() {
         state = .connecting
-        let brokerUrl = "\(useTls ? "ssl" : "tcp")://\(brokerHost):\(brokerPort)"
+        // brokerUrl for logging purposes
+        _ = "\(useTls ? "ssl" : "tcp")://\(brokerHost):\(brokerPort)"
         let mqtt = CocoaMQTT(clientID: clientIdValue, host: brokerHost, port: brokerPort)
         mqtt.username = username
         mqtt.password = password

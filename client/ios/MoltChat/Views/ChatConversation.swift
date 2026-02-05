@@ -36,9 +36,14 @@ struct ChatConversation: View {
                 .layoutPriority(1)
             
             HStack(alignment: .bottom, spacing: 8) {
-                TextField("输入消息", text: $inputText, axis: .vertical)
-                    .textFieldStyle(.roundedBorder)
-                    .lineLimit(1...4)
+                if #available(iOS 16.0, *) {
+                    TextField("输入消息", text: $inputText, axis: .vertical)
+                        .textFieldStyle(.roundedBorder)
+                        .lineLimit(1...4)
+                } else {
+                    TextField("输入消息", text: $inputText)
+                        .textFieldStyle(.roundedBorder)
+                }
                 Button {
                     let t = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
                     if !t.isEmpty && canSend {

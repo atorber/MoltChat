@@ -13,10 +13,10 @@ final class SecurePrefs: ObservableObject {
         let k = keychainKey(key)
         var result: AnyObject?
         let q: [String: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: k,
-            kSecReturnData: true,
-            kSecMatchLimit: kSecMatchLimitOne
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrService): k,
+            String(kSecReturnData): true,
+            String(kSecMatchLimit): kSecMatchLimitOne
         ]
         let status = SecItemCopyMatching(q as CFDictionary, &result)
         guard status == errSecSuccess, let data = result as? Data else { return nil }
@@ -27,11 +27,15 @@ final class SecurePrefs: ObservableObject {
         let k = keychainKey(key)
         let data = value.data(using: .utf8)!
         let add: [String: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: k,
-            kSecValueData: data
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrService): k,
+            String(kSecValueData): data
         ]
-        SecItemDelete([kSecClass: kSecClassGenericPassword, kSecAttrService: k] as CFDictionary)
+        let deleteQuery: [String: Any] = [
+            String(kSecClass): kSecClassGenericPassword,
+            String(kSecAttrService): k
+        ]
+        SecItemDelete(deleteQuery as CFDictionary)
         SecItemAdd(add as CFDictionary, nil)
     }
     
