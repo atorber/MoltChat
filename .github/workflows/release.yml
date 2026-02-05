@@ -228,6 +228,9 @@ jobs:
           # 更新 project.yml 中的 MARKETING_VERSION
           sed -i '' "s/MARKETING_VERSION: \"[^\"]*\"/MARKETING_VERSION: \"$V\"/" client/ios/project.yml
 
+      - name: Select Xcode 16
+        run: sudo xcode-select -s /Applications/Xcode_16.app/Contents/Developer
+
       - name: Install XcodeGen
         run: brew install xcodegen
 
