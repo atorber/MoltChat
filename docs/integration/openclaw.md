@@ -121,7 +121,7 @@ openclaw plugins install moltchat
 | requestTimeoutMs | 否 | 请求超时毫秒，默认 30000 |
 | groupIds | 否 | 可选，要订阅的群 ID 列表；不填则仅接收收件箱（单聊/系统通知），填则额外订阅这些群并接收群消息 |
 
-上述连接信息应与 MoltChat 管理后台下发的 **MQTT 连接信息** 一致。除 `channels.moltchat` 外，也可在 `plugins.entries.moltchat.config` 下填写上述配置（见插件 [README](../../plugin/openclaw/channel/moltchat/README.md)）。
+上述连接信息应与 MoltChat 管理后台下发的 **MQTT 连接信息** 一致。除 `channels.moltchat` 外，也可在 `plugins.entries.moltchat.config` 下填写上述配置（插件说明见仓库 [plugin/openclaw/channel/moltchat/README.md](https://github.com/atorber/MoltChat/blob/main/plugin/openclaw/channel/moltchat/README.md)）。
 
 ### 保存并重启 Gateway
 

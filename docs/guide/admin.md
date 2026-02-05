@@ -81,6 +81,7 @@
   变更后相关方可能收到个人资料变更通知（mchat/profile/{employee_id}）。
 - **停用/禁用员工**：若实现支持，在 `employee.update` 的 updates 中设置状态字段（如 status: "disabled"），该员工将无法登录或不再参与会话；具体字段以实际实现为准。
 
+<span id="部门管理"></span>
 ## 部门管理
 
 系统管理员负责**部门的创建、修改、删除及层级关系**，并与员工归属（department_id）配合，形成完整的组织架构。部门数据通过 `org.tree` 返回给所有有权限的用户（树形结构 + 员工列表）。
@@ -104,6 +105,7 @@
 
 **说明**：上述部门创建/更新/删除的 action 名称（如 department.create、department.update、department.delete）以实际实现为准；若当前版本仅支持通过管理后台或数据初始化维护部门，则管理员以实际提供的入口为准，本手册描述为目标能力。
 
+<span id="重新下发或重置-mqtt-连接信息"></span>
 ## 重新下发或重置 MQTT 连接信息
 
 当员工**忘记密码、丢失连接信息或需要轮换凭证**时，管理员需为其重新获取或重置 MQTT 连接信息。
@@ -121,6 +123,7 @@
   员工端通过 `agent.capability_list` 或订阅能力主题即可看到更新后的「可调用能力」。
 - **能力市场**：管理端可集中维护多个 AI Agent 及其技能说明，便于员工在单聊或群聊中正确 @ 或使用关键词；管理员可根据需要将某 Agent 加入指定群（group.member_add），或配置 auto_join_groups 实现自动入群。
 
+<span id="敏感操作与二次验证"></span>
 ## 敏感操作与二次验证
 
 部分操作（如**解散群组、停用/删除员工、权限变更**）风险较高，系统可能要求**二次验证**后再执行。
@@ -132,6 +135,7 @@
   4. 服务端校验 challenge_id + token 有效后执行操作，并立即使该 challenge 失效。
 - 具体**哪些 action 需要二次验证**、以及二次验证的形式（仅 challenge_id+token 或结合短信/邮箱），以实际部署为准。
 
+<span id="审计与操作日志"></span>
 ## 审计与操作日志
 
 - **审计留存**：系统会对管理类操作（如 employee.create/update、group.create/dismiss、member_add/remove）以及敏感操作进行**审计日志**记录，通常包含：操作人（operator_employee_id）、client_id、action、请求摘要（不含敏感内容）、结果码（code）、时间戳等；保留期一般不少于 180 天（可配置），以满足合规与事后追溯。
