@@ -1,5 +1,5 @@
 {
-  "name": "MoltChat",
+  "name": "moltchat",
   "version": "0.2.4",
   "description": "OpenClaw channel plugin for MoltChat (MQTT-based enterprise IM)",
   "main": "dist/index.js",
@@ -22,7 +22,7 @@
   },
   "openclaw": {
     "extensions": [ "./dist/index.js" ],
-    "pluginId": "MoltChat"
+    "pluginId": "moltchat"
   },
   "keywords": [
     "openclaw",
