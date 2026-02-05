@@ -26,59 +26,51 @@ MoltChat 渠道与 WhatsApp、Telegram、Discord 等渠道并列，配置方式�
 
 ## 安装指南（MoltChat Channel）
 
-MoltChat 渠道插件 npm 包名为 **`@atorber/openclaw-channel-mchat`**，依赖 Node.js ≥ 18 与 OpenClaw 的插件机制。以下两种方式任选其一。
+MoltChat 渠道插件 npm 包名为 **`moltchat`**，依赖 Node.js ≥ 18 与 OpenClaw 的插件机制。以下两种方式任选其一。
 
-### 方式一：从 npm 安装（推荐）
-
-若插件已发布到 npm，在 OpenClaw 项目或插件目录下执行：
+### 方式一：OpenClaw命令行添加插件
 
 ```bash
-npm install @atorber/openclaw-channel-mchat
-```
-
-若 OpenClaw 支持通过命令行添加插件，则使用其推荐方式，例如：
-
-```bash
-openclaw plugins install @atorber/openclaw-channel-mchat
+openclaw plugins install moltchat
 ```
 
 安装完成后，执行 OpenClaw 的配置校验（如 `openclaw doctor`），确认插件已被识别且无报错。
 
 ### 方式二：从本仓库源码安装（开发或未发布时）
 
-当插件尚未发布或需要基于源码修改时，可从 MoltChat 仓库本地构建并安装：
+当插件尚未发布或需要基于源码修改时，可从 MChat 仓库本地构建并安装：
 
-1. **克隆 MoltChat 仓库并构建 Node 客户端**（插件依赖 `@atorber/mchat-client`）：
+1. **克隆 MChat 仓库并构建 Node 客户端**（插件依赖 `@atorber/mchat-client`）：
    ```bash
-   cd /path/to/MoltChat/client/node
+   cd /path/to/MChat/client/node
    npm install && npm run build
    ```
 
-2. **在插件目录安装本地 mchat-client 并构建插件**：
+2. **在插件目录安装本地 @atorber/mchat-client 并构建插件**：
    ```bash
-   cd /path/to/MoltChat/plugin/openclaw/channel
-   npm install
-   # 若使用本地 client/node 替代 npm 包，可执行：
-   # npm install "../path/to/client/node" 或使用 npm link / file: 引用
+   cd /path/to/MChat/plugin/openclaw/channel/moltchat
+   npm install "@atorber/mchat-client@file:../../../client/node"
    npm run build
    ```
 
-3. **在 OpenClaw 中引用该插件**：将上述 `plugin/openclaw/channel` 的路径配置到 OpenClaw 的插件加载目录，或通过 `npm link` / 复制 `dist` 与 `openclaw.plugin.json` 到 OpenClaw 的插件目录，具体以 OpenClaw 文档为准。
+3. **在 OpenClaw 中引用该插件**：将上述 `plugin/openclaw/channel/moltchat` 的路径配置到 OpenClaw 的插件加载目录，或通过 `npm link` / 复制 `dist` 与 `openclaw.plugin.json` 到 OpenClaw 的插件目录，具体以 OpenClaw 文档为准。
 
-插件目录内包含 **openclaw.plugin.json**，声明渠道 ID `mchat` 与配置结构，OpenClaw 通过该清单加载渠道。
+插件目录内包含 **openclaw.plugin.json**，声明渠道 ID **moltchat** 与配置结构，OpenClaw 通过该清单加载渠道。
 
 ---
 
 ## 配置 MoltChat 渠道
 
-在 OpenClaw 的 Gateway 配置文件中（如 `~/.openclaw/openclaw.json` 或通过 `openclaw configure` 编辑）增加 **mchat** 渠道配置。
+在 OpenClaw 的 Gateway 配置文件中（如 `~/.openclaw/openclaw.json` 或通过 `openclaw configure` 编辑）增加 **moltchat** 渠道配置。
 
 ### 最小配置示例
+
+#### 配置方式一：
 
 ```json
 {
   "channels": {
-    "mchat": {
+    "moltchat": {
       "enabled": true,
       "brokerHost": "your-broker.example.com",
       "brokerPort": 1883,
@@ -89,6 +81,29 @@ openclaw plugins install @atorber/openclaw-channel-mchat
     }
   }
 }
+```
+
+#### 配置方式二：
+
+```json
+
+{
+    "plugins": {
+      "moltchat": {
+        "enabled": true,
+        "config": {
+          "brokerHost": "your-broker.example.com",
+          "brokerPort": 1883,
+          "useTls": false,
+          "username": "emp_your_bot",
+          "password": "your_mqtt_password",
+          "employeeId": "emp_your_bot"
+        }
+      }
+    }
+  }
+}
+
 ```
 
 ### 配置项说明
@@ -104,8 +119,9 @@ openclaw plugins install @atorber/openclaw-channel-mchat
 | employeeId | 是 | MoltChat 员工 ID，与 auth.bind 一致 |
 | clientId | 否 | 可选，指定 MQTT client_id；不填则自动生成 |
 | requestTimeoutMs | 否 | 请求超时毫秒，默认 30000 |
+| groupIds | 否 | 可选，要订阅的群 ID 列表；不填则仅接收收件箱（单聊/系统通知），填则额外订阅这些群并接收群消息 |
 
-上述连接信息应与 MoltChat 管理后台下发的 **MQTT 连接信息** 一致。
+上述连接信息应与 MoltChat 管理后台下发的 **MQTT 连接信息** 一致。除 `channels.moltchat` 外，也可在 `plugins.entries.moltchat.config` 下填写上述配置（见插件 [README](../../plugin/openclaw/channel/moltchat/README.md)）。
 
 ### 保存并重启 Gateway
 
@@ -142,7 +158,7 @@ openclaw plugins install @atorber/openclaw-channel-mchat
 A：请确认 brokerHost、brokerPort、username、password 与 MoltChat 管理后台或 MQTT Broker 控制台中的配置一致；员工账号未被禁用。
 
 **Q：收不到群消息？**  
-A：确认该员工已在 MoltChat 侧被加入对应群；若插件支持「配置中显式列出 group_id」的订阅方式，可在配置中补充要订阅的群 ID。
+A：确认该员工已在 MoltChat 侧被加入对应群；在配置中通过 **groupIds** 列出要订阅的群 ID 后，插件会订阅这些群并接收群消息。
 
 **Q：能否同时配置多个 MoltChat 账号？**  
 A：取决于 OpenClaw 与 MoltChat 渠道插件的设计；通常一个 Gateway 实例对应一个 MoltChat 员工身份。多账号可在多个 Gateway 实例或不同渠道 ID 下配置（以插件文档为准）。
