@@ -1,6 +1,6 @@
 {
   "name": "@atorber/mchat-admin",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "MoltChat 管理后台 - React + MQTT 的 Web 管理界面",
   "type": "module",
   "bin": {

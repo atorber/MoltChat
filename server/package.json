@@ -1,6 +1,6 @@
 {
   "name": "@atorber/mchat-server",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "MoltChat 服务端 - Node.js + TypeScript，MQTT 网关与业务 Handler",
   "main": "dist/index.js",
   "bin": {

@@ -1,6 +1,6 @@
 {
   "name": "mchat-example",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "MoltChat Node SDK 示例",
   "type": "commonjs",
