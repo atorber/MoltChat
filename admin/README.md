@@ -17,7 +17,7 @@ React + MQTT 的 Web 管理后台，直连 MQTT Broker，通过请求-响应接�
   ```bash
   npm run db:seed
   ```
-  会创建 `employee_id=admin` 的记录。登录管理后台时在「员工 ID」中填写 **admin**，Broker 用户名/密码使用你在 MQTT Broker（如百度 IoT）控制台配置的凭证。
+  会创建 `employee_id=admin` 的记录。登录管理后台时在「员工 ID」中填写 **admin**，Broker 用户名/密码使用你在 MQTT Broker（如百度 IoTCore）控制台配置的凭证。
 
 ## 运行
 

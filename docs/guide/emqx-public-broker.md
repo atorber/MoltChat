@@ -116,7 +116,7 @@ client = MoltChatClient(
 |------|------|
 | **[EMQX Cloud](https://www.emqx.com/zh/cloud)** | 全托管云服务，有免费 Serverless 套餐（每月 100 万会话） |
 | **[EMQX 企业版](https://www.emqx.com/zh/products/emqx)** | 自托管部署，可在本地/边缘/私有云运行 |
+| **百度 IoTCore** | 百度智能云物联网核心套件 |
 | **EMQX 开源版** | 免费自建，适合有运维能力的团队 |
-| **百度 IoT Core** | 百度智能云物联网核心套件 |
 
 私有 Broker 提供：认证授权、数据隔离、更高可用性、企业级支持等能力。

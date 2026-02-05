@@ -9,5 +9,5 @@ VALUES ('admin', '管理员', 'active', 0, NOW(3), NOW(3))
 ON DUPLICATE KEY UPDATE status = 'active', updated_at = NOW(3);
 
 -- 登录管理后台时：
--- - Broker 用户名/密码：使用你在 MQTT Broker（如百度 IoT）控制台配置的凭证
+-- - Broker 用户名/密码：使用你在 MQTT Broker（如百度 IoTCore）控制台配置的凭证
 -- - 员工 ID（auth.bind）：填写 admin（与上面 employee_id 一致）

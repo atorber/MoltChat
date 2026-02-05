@@ -26,7 +26,7 @@
 
 ## 快速开始
 
-1. **准备**：MySQL 8、MQTT Broker（如 EMQX 或百度 IoT），并开启 Broker 的 **WebSocket** 端口（管理后台需用 WSS）。
+1. **准备**：MySQL 8、MQTT Broker（如 EMQX 或百度 IoTCore），并开启 Broker 的 **WebSocket** 端口（管理后台需用 WSS）。
 
 2. **服务端**
    ```bash
