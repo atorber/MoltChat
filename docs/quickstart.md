@@ -51,6 +51,8 @@ npm run db:seed
 
 ## 4. 启动服务端
 
+### 方式一：从源码运行（开发/调试）
+
 在 **server** 目录执行：
 
 ```bash
@@ -64,9 +66,53 @@ npm start
 npm run dev
 ```
 
+### 方式二：通过 npm 安装运行（生产部署推荐）
+
+无需克隆仓库，直接通过 npm 安装并启动：
+
+```bash
+# 全局安装
+npm install -g @atorber/mchat-server
+
+# 准备配置文件（可从仓库复制 config.sample.yaml 并修改）
+mkdir -p ~/mchat && cat > ~/mchat/config.yaml << 'EOF'
+serviceId: ""  # 可选，多实例隔离
+
+broker:
+  host: "broker.emqx.io"
+  port: 1883
+  username: ""
+  password: ""
+
+mysql:
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: ""
+  database: "mchat"
+
+storage:
+  endpoint: "https://s3.example.com"
+  bucket: "mchat"
+  accessKey: ""
+  secretKey: ""
+EOF
+
+# 启动服务端
+CONFIG_PATH=~/mchat/config.yaml mchat-server
+```
+
+或使用 `npx` 免安装运行：
+
+```bash
+CONFIG_PATH=~/mchat/config.yaml npx @atorber/mchat-server
+```
+
 服务端会连接 MQTT Broker 与 MySQL，订阅管理/消息请求并回写响应。保持该进程运行。
 
 ## 5. 启动管理后台（可选）
+
+### 方式一：从源码运行
 
 新开终端，进入 **admin** 目录：
 
@@ -74,6 +120,27 @@ npm run dev
 cd admin
 npm install
 npm run dev
+```
+
+### 方式二：通过 npm 安装运行
+
+无需克隆仓库，直接安装并启动：
+
+```bash
+# 全局安装
+npm install -g @atorber/mchat-admin
+
+# 启动管理后台（默认端口 5174）
+mchat-admin
+
+# 或指定端口
+mchat-admin --port 8080
+```
+
+或使用 `npx` 免安装运行：
+
+```bash
+npx @atorber/mchat-admin
 ```
 
 浏览器访问 **http://localhost:5174**。在登录页填写：

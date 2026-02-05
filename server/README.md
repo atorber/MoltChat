@@ -66,20 +66,20 @@ npm run dev
 **通过 npm 安装并 CLI 启动**（适合已发布到 npm 或本地 link）：
 
 ```bash
-# 全局安装后可直接用命令行启动
-npm install -g mchat-server
-# 指定配置文件路径（全局安装后包内 config 仅含示例，需自行准备 config.yaml）
-export CONFIG_PATH=/path/to/your/config.yaml
-mchat-server
+# 全局安装
+npm install -g @atorber/mchat-server
+
+# 指定配置文件路径启动
+CONFIG_PATH=/path/to/your/config.yaml mchat-server
 ```
 
 或临时运行（不安装到全局）：
 
 ```bash
-npx mchat-server
+CONFIG_PATH=/path/to/your/config.yaml npx @atorber/mchat-server
 ```
 
-使用全局安装或 `npx` 时，默认会查找包内 `config/config.yaml`（包内仅含示例文件），因此**建议通过环境变量 `CONFIG_PATH` 指定实际配置文件路径**。
+使用全局安装或 `npx` 时，默认会查找包内 `config/config.yaml`（包内仅含示例文件），因此**必须通过环境变量 `CONFIG_PATH` 指定实际配置文件路径**。
 
 ## 项目结构
 

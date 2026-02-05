@@ -1,12 +1,29 @@
 {
-  "name": "mchat-admin",
+  "name": "@atorber/mchat-admin",
   "version": "0.3.0",
-  "private": true,
+  "description": "MoltChat 管理后台 - React + MQTT 的 Web 管理界面",
   "type": "module",
+  "bin": {
+    "mchat-admin": "bin/mchat-admin.cjs"
+  },
+  "files": [
+    "dist",
+    "bin"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mchat",
+    "mqtt",
+    "admin",
+    "im"
+  ],
+  "engines": {
+    "node": ">=18"
   },
   "dependencies": {
     "mqtt": "^5.3.0",

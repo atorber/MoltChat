@@ -1,4 +1,4 @@
-# 发布 client/node、client/python、server、plugin/openclaw/channel/moltchat 到 npm / PyPI；
+# 发布 client/node、client/python、server、admin、plugin/openclaw/channel/moltchat 到 npm / PyPI；
 # Release 发布时编译 Android APK 和 iOS App 并上传到该 Release。
 # 触发：创建 Release 并打 tag（格式 v*，如 v1.0.0）或手动运行
 # 需在仓库 Settings → Secrets 中配置：NPM_TOKEN、PYPI_API_TOKEN
@@ -111,6 +111,27 @@ jobs:
 
       - name: Install and publish server
         working-directory: server
+        run: |
+          npm ci 2>/dev/null || npm install
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  # 发布 admin 到 npm（使用 package.json 中的版本号）
+  publish-npm-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name || github.sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Install, build, and publish admin
+        working-directory: admin
         run: |
           npm ci 2>/dev/null || npm install
           npm publish --access public
