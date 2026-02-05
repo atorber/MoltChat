@@ -24,6 +24,8 @@ final class MChatConnection {
     private let username: String
     private let password: String
     private let employeeId: String
+    /// 当前连接使用的员工 ID，用于按身份隔离历史会话缓存。
+    var myEmployeeId: String { employeeId }
     private let clientIdValue: String
     
     private let reqPrefix = "mchat/msg/req/"

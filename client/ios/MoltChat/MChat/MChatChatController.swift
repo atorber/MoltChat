@@ -57,7 +57,7 @@ final class MChatChatController {
         onMessagesChanged?(map)
         updateSessionsFromPeers(Set(map.keys))
         if let cache = historyCache {
-            Task { await cache.save(peerId: from, messages: list) }
+            Task { await cache.save(myEmployeeId: connection.myEmployeeId, peerId: from, messages: list) }
         }
     }
     
@@ -114,7 +114,7 @@ final class MChatChatController {
         onMessagesChanged?(map)
         updateSessionsFromPeers(Set(map.keys))
         if let cache = historyCache {
-            Task { await cache.save(peerId: peerEmployeeId, messages: list) }
+            Task { await cache.save(myEmployeeId: connection.myEmployeeId, peerId: peerEmployeeId, messages: list) }
         }
         Task {
             let res = await connection.request(action: "msg.send_private", params: [

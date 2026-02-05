@@ -69,7 +69,7 @@ final class MChatRuntime: ObservableObject {
             employeeId: employeeId
         )
         Task { @MainActor in
-            let cached = await historyCache.loadAll()
+            let cached = await historyCache.loadAll(myEmployeeId: employeeId)
             let controller = MChatChatController(
                 connection: conn,
                 historyCache: historyCache,
