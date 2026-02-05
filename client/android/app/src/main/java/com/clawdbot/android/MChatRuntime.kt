@@ -87,7 +87,7 @@ class MChatRuntime(context: Context) {
     disconnect()
     _connectionState.value = MChatConnectionState.Connecting
     scope.launch {
-      val cached = withContext(Dispatchers.IO) { historyCache.loadAll() }
+      val cached = withContext(Dispatchers.IO) { historyCache.loadAll(employeeId) }
       val conn = MChatConnection(
         scope = scope,
         brokerHost = host,

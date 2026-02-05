@@ -10,15 +10,22 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 private const val TAG = "ChatHistoryCache"
-private const val FILENAME = "mchat_history.json"
+private const val FILENAME_PREFIX = "mchat_history_"
+private const val FILENAME_SUFFIX = ".json"
+private const val LEGACY_FILENAME = "mchat_history.json"
 private const val MAX_MESSAGES_PER_PEER = 500
 private const val MAX_PEERS = 100
 
+/** 将员工 ID 转为安全文件名（仅保留字母数字、下划线、连字符）。 */
+private fun sanitizeEmployeeIdForFile(employeeId: String): String =
+  employeeId.trim().replace(Regex("[^a-zA-Z0-9_.-]"), "_").ifEmpty { "default" }
+
 /**
- * 本地历史消息缓存：按会话（peer employee_id）持久化消息，切换回对话时先显示缓存。
+ * 本地历史消息缓存：按「当前登录员工 + 会话（peer employee_id）」持久化消息。
+ * 不同员工身份与同一联系人的对话分别存储，互不覆盖。
  */
 class ChatHistoryCache(context: Context) {
-  private val file = File(context.filesDir, FILENAME)
+  private val filesDir = context.filesDir
   private val json = Json {
     ignoreUnknownKeys = true
     encodeDefaults = true
@@ -27,29 +34,57 @@ class ChatHistoryCache(context: Context) {
   @Serializable
   private data class CacheRoot(val peers: Map<String, List<ChatMessage>> = emptyMap())
 
+  private fun fileFor(employeeId: String): File =
+    File(filesDir, "$FILENAME_PREFIX${sanitizeEmployeeIdForFile(employeeId)}$FILENAME_SUFFIX")
+
   /**
-   * 加载全部缓存，用于连接后恢复会话列表与各会话历史。
+   * 加载当前员工身份下的全部会话缓存，用于连接后恢复会话列表与各会话历史。
+   * @param myEmployeeId 当前登录/连接的员工 ID，用于区分不同身份下的会话文件。
    */
-  suspend fun loadAll(): Map<String, List<ChatMessage>> = withContext(Dispatchers.IO) {
-    if (!file.exists()) return@withContext emptyMap<String, List<ChatMessage>>()
-    try {
-      val raw = file.readText(Charsets.UTF_8).trim()
-      if (raw.isEmpty()) return@withContext emptyMap()
-      val root = json.decodeFromString<CacheRoot>(raw)
-      root.peers
-    } catch (e: Throwable) {
-      Log.w(TAG, "loadAll failed", e)
-      emptyMap()
+  suspend fun loadAll(myEmployeeId: String): Map<String, List<ChatMessage>> = withContext(Dispatchers.IO) {
+    val file = fileFor(myEmployeeId)
+    if (file.exists()) {
+      try {
+        val raw = file.readText(Charsets.UTF_8).trim()
+        if (raw.isNotEmpty()) {
+          val root = json.decodeFromString<CacheRoot>(raw)
+          return@withContext root.peers
+        }
+      } catch (e: Throwable) {
+        Log.w(TAG, "loadAll failed employeeId=$myEmployeeId", e)
+      }
     }
+    // 兼容旧版单文件：若新文件不存在则从旧文件迁移一次
+    val legacyFile = File(filesDir, LEGACY_FILENAME)
+    if (legacyFile.exists()) {
+      try {
+        val raw = legacyFile.readText(Charsets.UTF_8).trim()
+        if (raw.isNotEmpty()) {
+          val root = json.decodeFromString<CacheRoot>(raw)
+          if (root.peers.isNotEmpty()) {
+            val rootToWrite = CacheRoot(root.peers)
+            file.writeText(json.encodeToString(CacheRoot.serializer(), rootToWrite), Charsets.UTF_8)
+            legacyFile.delete()
+            return@withContext root.peers
+          }
+        }
+      } catch (e: Throwable) {
+        Log.w(TAG, "migrate from legacy failed", e)
+      }
+    }
+    emptyMap()
   }
 
   /**
-   * 保存某会话的消息列表（会裁剪到 MAX_MESSAGES_PER_PEER 条）。
+   * 保存当前员工身份下与某联系人的消息列表（会裁剪到 MAX_MESSAGES_PER_PEER 条）。
+   * @param myEmployeeId 当前登录/连接的员工 ID。
+   * @param peerId 对方联系人 employee_id。
    */
-  suspend fun save(peerId: String, messages: List<ChatMessage>) = withContext(Dispatchers.IO) {
+  suspend fun save(myEmployeeId: String, peerId: String, messages: List<ChatMessage>) = withContext(Dispatchers.IO) {
     if (messages.isEmpty()) return@withContext
+    val file = fileFor(myEmployeeId)
     try {
-      val current = loadAll().toMutableMap()
+      val current = loadAll(myEmployeeId).toMutableMap()
       val trimmed = messages.takeLast(MAX_MESSAGES_PER_PEER)
       current[peerId] = trimmed
       if (current.size > MAX_PEERS) {
@@ -62,7 +97,7 @@ class ChatHistoryCache(context: Context) {
       val root = CacheRoot(current)
       file.writeText(json.encodeToString(CacheRoot.serializer(), root), Charsets.UTF_8)
     } catch (e: Throwable) {
-      Log.w(TAG, "save failed peer=$peerId", e)
+      Log.w(TAG, "save failed myEmployeeId=$myEmployeeId peer=$peerId", e)
     }
   }
 }

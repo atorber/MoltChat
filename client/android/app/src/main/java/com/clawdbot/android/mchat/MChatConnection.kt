@@ -79,6 +79,8 @@ class MChatConnection(
   @Volatile private var reconnectBackoffMs = INITIAL_RECONNECT_MS
 
   private val employeeIdValue = employeeId.trim()
+  /** 当前连接使用的员工 ID，用于按身份隔离历史会话缓存。 */
+  val myEmployeeId: String get() = employeeIdValue
   private val respTopicPrefix = "$RESP_PREFIX$clientIdValue/"
   private val inboxTopic = "$INBOX_PREFIX$employeeIdValue"
 

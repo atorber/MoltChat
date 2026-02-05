@@ -83,7 +83,7 @@ class MChatChatController(
         map[from] = list
         _messagesByPeer.value = map
         updateSessionsFromPeers(map.keys)
-        historyCache?.let { scope.launch { it.save(from, list) } }
+        historyCache?.let { scope.launch { it.save(connection.myEmployeeId, from, list) } }
       }
     } catch (e: Throwable) {
       Log.w("MChatChat", "handleInboxMessage parse error", e)
@@ -142,7 +142,7 @@ class MChatChatController(
         map[peerEmployeeId] = list
         _messagesByPeer.value = map
         updateSessionsFromPeers(map.keys)
-        historyCache?.let { scope.launch { it.save(peerEmployeeId, list) } }
+        historyCache?.let { scope.launch { it.save(connection.myEmployeeId, peerEmployeeId, list) } }
       }
       val res = connection.request("msg.send_private", mapOf(
         "to_employee_id" to peerEmployeeId,
