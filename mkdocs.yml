@@ -42,6 +42,7 @@ nav:
     - 系统管理员指南: guide/admin.md
     - 员工使用指南: guide/user.md
     - 典型场景: guide/scenarios.md
+    - 使用 EMQ 公共 Broker: guide/emqx-public-broker.md
     - 常见问题: guide/faq.md
   - 后台管理系统: admin-web.md
   - 客户端:

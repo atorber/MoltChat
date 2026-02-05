@@ -8,7 +8,7 @@
 |------|------|
 | **Node.js** | ≥ 18 |
 | **MySQL** | 8.x 或 5.7+，用于存储组织、会话、消息等 |
-| **MQTT Broker** | 如 EMQX、百度 IoT 等；需开启 **WebSocket** 端口（管理后台与部分客户端通过 WSS 连接） |
+| **MQTT Broker** | 如 EMQX、百度 IoT 等；需开启 **WebSocket** 端口（管理后台与部分客户端通过 WSS 连接）。<br>💡 **快速测试？** 可使用 [EMQ 免费公共 Broker](guide/emqx-public-broker.md)，无需自建即可开始体验。 |
 
 ## 1. 配置服务端
 

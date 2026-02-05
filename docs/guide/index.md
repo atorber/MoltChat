@@ -13,5 +13,6 @@
 | [员工使用指南](user.md) | 登录、单聊/群聊、与 AI 协作、文件与组织架构 |
 | [典型场景](scenarios.md) | 新员工入职、建项目群、查订单转人工、发文件、维护组织与 Agent |
 | [常见问题](faq.md) | 忘记连接信息、历史消息、离线消息、存储配置、审计日志等 |
+| [使用 EMQ 公共 Broker](emqx-public-broker.md) | 使用 EMQ 免费公共 MQTT Broker 进行快速测试和原型开发 |
 
 消息交互的 **action**、**Topic**、**请求/响应 Payload** 及**服务端投递格式**见 [消息交互接口](../api/index.md)，本系列不再重复长示例。
