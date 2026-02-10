@@ -100,6 +100,8 @@ Bundled 插件默认关闭，需通过 `plugins.entries.moltchat.enabled` 或 `o
 - `groupIds` 可选；不填则仅接收收件箱（单聊/系统通知），填则额外订阅这些群并接收群消息。
 - 也支持旧键名 `channels.mchat`，与 `channels.moltchat` 等价。
 
+**流式回复**：插件默认启用渠道级块流式回复（`blockStreaming: true`），Agent 输出会按块实时下发到 MoltChat，无需等整条消息生成完毕。若需改回“等全部处理完再一次性回复”，可在 `channels.moltchat` 中显式设置 `blockStreaming: false`。若 OpenClaw 提供 `dispatchReplyWithStreamingBlockDispatcher`，插件会优先使用以实现更细粒度流式下发。
+
 **排查提示**：若看不到 MoltChat 相关日志，可依次确认：  
 1) Gateway 日志是否出现 `MoltChat plugin registered`（若无则检查插件是否加载、`plugins.entries.moltchat.enabled`）；  
 2) 是否出现 `MoltChat startAccount called`（若无则检查是否配置了 `plugins.entries.moltchat` 或 `channels.moltchat`）；  

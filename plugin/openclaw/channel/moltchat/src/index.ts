@@ -44,7 +44,9 @@ async function dispatchMoltChatInbound(params: {
   } | null;
   if (!core) return;
   const { msg, accountId } = params;
-  const cfg = core.config.loadConfig();
+  const rawCfg = core.config.loadConfig() as Record<string, unknown>;
+  // 启用渠道级块流式回复：不等整条消息结束再下发，而是按块实时 deliver（OpenClaw 非 Telegram 渠道需显式开启 blockStreaming）
+  const cfg = mergeMoltChatChannelStreamingConfig(rawCfg);
   const route = core.channel.routing.resolveAgentRoute({
     cfg,
     channel: CHANNEL_ID,
@@ -90,7 +92,11 @@ async function dispatchMoltChatInbound(params: {
     },
   });
   const thread = msg.thread;
-  await core.channel.reply.dispatchReplyWithBufferedBlockDispatcher({
+  const replyApi = core.channel.reply as {
+    dispatchReplyWithBufferedBlockDispatcher: (p: unknown) => Promise<void>;
+    dispatchReplyWithStreamingBlockDispatcher?: (p: unknown) => Promise<void>;
+  };
+  const dispatchPayload = {
     ctx: ctxPayload,
     cfg: cfg as Record<string, unknown>,
     dispatcherOptions: {
@@ -104,7 +110,24 @@ async function dispatchMoltChatInbound(params: {
         pluginLogger?.warn?.(`MoltChat ${info.kind} reply failed: ${String(err)}`);
       },
     },
-  });
+  };
+  if (typeof replyApi.dispatchReplyWithStreamingBlockDispatcher === 'function') {
+    await replyApi.dispatchReplyWithStreamingBlockDispatcher(dispatchPayload);
+  } else {
+    await replyApi.dispatchReplyWithBufferedBlockDispatcher(dispatchPayload);
+  }
+}
+
+/**
+ * 合并 channels.moltchat 的流式回复配置，使 core 按块调用 deliver，实现流式实时回复。
+ * 若用户已在配置中显式设置 blockStreaming: false 则保留其选择。
+ */
+function mergeMoltChatChannelStreamingConfig(cfg: Record<string, unknown>): Record<string, unknown> {
+  const channels = (cfg.channels as Record<string, unknown>) ?? {};
+  const moltchat = (channels[CHANNEL_ID] as Record<string, unknown>) ?? {};
+  if (moltchat.blockStreaming === false) return cfg;
+  const mergedChannels = { ...channels, [CHANNEL_ID]: { ...moltchat, blockStreaming: true } };
+  return { ...cfg, channels: mergedChannels };
 }
 
 /** 启动单个账号的通用逻辑（供 start 与 startAccount 复用）；config、accountId 与 emitChat 由调用方提供 */
